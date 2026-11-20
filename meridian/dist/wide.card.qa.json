@@ -1,0 +1,8 @@
+{
+  "package": "wide.card.fridge",
+  "sha256": "61598d3c2c0e1306e0779d026796f905d9710c0a9434eb033403f90b6b108efe",
+  "readerCheck": "pass",
+  "fullReceipt": "../qa.json",
+  "nativeVerified": false,
+  "formVerified": false
+}

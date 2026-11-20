@@ -1,0 +1,8 @@
+{
+  "package": "4x4.fridge",
+  "sha256": "eb2036f3bb60852064eaf1dbed8ed0ee92ee2aa0f54c94978497c3ebd88170f7",
+  "readerCheck": "pass",
+  "fullReceipt": "../qa.json",
+  "nativeVerified": false,
+  "formVerified": false
+}

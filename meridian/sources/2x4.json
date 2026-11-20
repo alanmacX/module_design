@@ -1,0 +1,19 @@
+{
+  "canvasDimension": "2*4",
+  "background": {
+    "mode": "solid",
+    "color": "#101719",
+    "frameStyle": "none"
+  },
+  "cards": [
+    {
+      "file": "../dist/wide.card.fridge",
+      "x": 12,
+      "y": 8.19767441860465,
+      "w": 320,
+      "h": 160,
+      "rot": 0,
+      "z": 1
+    }
+  ]
+}

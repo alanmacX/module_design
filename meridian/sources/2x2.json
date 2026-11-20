@@ -1,0 +1,19 @@
+{
+  "canvasDimension": "2*2",
+  "background": {
+    "mode": "solid",
+    "color": "#101719",
+    "frameStyle": "none"
+  },
+  "cards": [
+    {
+      "file": "../dist/square.card.fridge",
+      "x": 12,
+      "y": 16.3953488372093,
+      "w": 320,
+      "h": 320,
+      "rot": 0,
+      "z": 1
+    }
+  ]
+}

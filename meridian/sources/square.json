@@ -1,0 +1,18 @@
+{
+  "width": 300,
+  "height": 300,
+  "capability": {
+    "k": "clock",
+    "readingBlend": "bare",
+    "readingStyle": "surface",
+    "readingOpacity": 0
+  },
+  "capBox": {
+    "x": 0.055,
+    "y": 0.28,
+    "w": 0.89,
+    "h": 0.44,
+    "rot": 0,
+    "opacity": 1
+  }
+}

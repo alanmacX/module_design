@@ -1,0 +1,8 @@
+{
+  "package": "square.card.fridge",
+  "sha256": "c067f8fffa0fa914eb83ddbdee31945be996a963a2b4f9126755642913232b62",
+  "readerCheck": "pass",
+  "fullReceipt": "../qa.json",
+  "nativeVerified": false,
+  "formVerified": false
+}
