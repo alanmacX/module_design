@@ -1,0 +1,81 @@
+{
+  "modelFingerprint": "6986df47be385c772aff68c631b1a2d750cfa6889db42a462310d9e859e778c0",
+  "method": "unmodified shared production SVG adapter, native licensed digits font, Sharp/librsvg",
+  "nativeVerified": false,
+  "formVerified": false,
+  "browserVerified": false,
+  "packages": [
+    {
+      "file": "4x4-porcelain.fridge",
+      "sha256": "3aae0ea8625b9878deb0bb0e8fa7558e4915cb6d045de544ca8439555ea9d682",
+      "dimension": "4*4",
+      "palette": "porcelain"
+    },
+    {
+      "file": "4x4-cobalt.fridge",
+      "sha256": "82915047b66add60740cc6bfd81d436c3eec8ac0f70384cdc43f43cb5af59e57",
+      "dimension": "4*4",
+      "palette": "cobalt"
+    },
+    {
+      "file": "4x4-ink.fridge",
+      "sha256": "979a3f16e6fe2bfa36624e8d2abfbfe0c361120ed738df6caf1f26e920dddd53",
+      "dimension": "4*4",
+      "palette": "ink"
+    },
+    {
+      "file": "4x4-cream.fridge",
+      "sha256": "c81efa10b2a14b1d53384f18d4b2baaa3fb564608e9cf5b35054e7f66946cbc8",
+      "dimension": "4*4",
+      "palette": "cream"
+    },
+    {
+      "file": "2x2-porcelain.fridge",
+      "sha256": "69283e493b8c4b12ec8e1e306dd291f58f7794a80a9eb1242c0da342c8eda8a6",
+      "dimension": "2*2",
+      "palette": "porcelain"
+    },
+    {
+      "file": "2x2-cobalt.fridge",
+      "sha256": "9f5f09d5a9b52c3b1ab19247e7f7fe657bbca4a0321ece7ff2d53d9785f20cff",
+      "dimension": "2*2",
+      "palette": "cobalt"
+    },
+    {
+      "file": "2x2-ink.fridge",
+      "sha256": "59a8f0f0564b06cf96dad7d4faeb5dca98d00af3e7d87558e86f9478c5fa0572",
+      "dimension": "2*2",
+      "palette": "ink"
+    },
+    {
+      "file": "2x2-cream.fridge",
+      "sha256": "508c4e409fc9f6b07243f7bdc878866ec6bac147a87dec2ce7cce6e2416c8e23",
+      "dimension": "2*2",
+      "palette": "cream"
+    },
+    {
+      "file": "2x4-porcelain.fridge",
+      "sha256": "5634f8e03b1267390ddb36fdadf751a52f450bb53ea9f8052bd354c648bf5bf3",
+      "dimension": "2*4",
+      "palette": "porcelain"
+    },
+    {
+      "file": "2x4-cobalt.fridge",
+      "sha256": "df6d7bf334b4b46cac120fb53be0edc37eab76119fe8114c8e31d842cda3b085",
+      "dimension": "2*4",
+      "palette": "cobalt"
+    },
+    {
+      "file": "2x4-ink.fridge",
+      "sha256": "1b32cdb70b9c49f69403bca15c406168af9437c4d6a6ff554b6630b84aadb1c5",
+      "dimension": "2*4",
+      "palette": "ink"
+    },
+    {
+      "file": "2x4-cream.fridge",
+      "sha256": "0b75c2295408aa8770f06bb722f5b1208d2ea676a1be32c4467a45c4b6ea9f65",
+      "dimension": "2*4",
+      "palette": "cream"
+    }
+  ]
+}

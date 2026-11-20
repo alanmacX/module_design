@@ -1,0 +1,21 @@
+// Build in a fresh detached worktree; never modify the user's compiler checkout.
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process');
+const base=path.resolve(process.env.PROJECT_X||path.join(__dirname,'../../project_x'));
+const pin='1391bd6670090aa2559d017a86af6d3e8c9bb300';
+const builds=path.join(__dirname,'../.build');fs.mkdirSync(builds,{recursive:true});
+const dest=path.join(builds,'regulator-'+Date.now());
+const run=(cmd,args,options={})=>cp.execFileSync(cmd,args,{stdio:'inherit',...options});
+run('git',['-C',base,'worktree','add','--detach',dest,pin]);
+run('git',['-C',dest,'apply','--check',path.join(__dirname,'integration.patch')]);
+run('git',['-C',dest,'apply',path.join(__dirname,'integration.patch')]);
+run('npm',['ci','--ignore-scripts'],{cwd:dest});
+run(process.execPath,['previewer/build.cjs'],{cwd:dest});
+const env={...process.env,PROJECT_X:dest};
+run(process.execPath,[path.join(__dirname,'render.cjs')],{env});
+run(process.execPath,[path.join(__dirname,'verify.cjs')],{env});
+run('npm',['run','templates:check'],{cwd:dest,env:{...env,NODE_OPTIONS:'--require '+path.join(__dirname,'../scripts/linux-typescript.cjs')}});
+const zlib=require('node:zlib');
+fs.writeFileSync(path.join(__dirname,'compiled/shared-models.js.gz'),zlib.gzipSync(fs.readFileSync(path.join(dest,'previewer/shared-models.js'))));
+fs.copyFileSync(path.join(dest,'skills/fridge-create/references/design-contract.json'),path.join(__dirname,'compiled/design-contract.json'));
+fs.copyFileSync(path.join(dest,'entry/src/main/ets/model/PreviewDesignContract.ets'),path.join(__dirname,'compiled/PreviewDesignContract.ets'));
+console.log('Verified compiler worktree: '+dest);

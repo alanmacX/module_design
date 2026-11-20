@@ -1,0 +1,24 @@
+{
+  "method": "Human inspection of actual shared SVG adapter output via Sharp; font baseline conversion only for librsvg rasterization",
+  "sizes": [
+    180,
+    300,
+    420
+  ],
+  "palettes": [
+    "porcelain",
+    "cream",
+    "cobalt",
+    "ink"
+  ],
+  "iterations": [
+    "Changed from decorative digital clock to native regulator scene",
+    "Corrected preview baseline clipping and loaded real licensed digits",
+    "Separated minute sweep from label annulus",
+    "Adjusted bounds and pointer gaps after exhaustive collision checks"
+  ],
+  "nativeBuild": false,
+  "actualFormVerified": false,
+  "browserImportVerified": false,
+  "remaining": "Native SDK/device unavailable; generated package needs integration patch before App import."
+}

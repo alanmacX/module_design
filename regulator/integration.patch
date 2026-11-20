@@ -1,0 +1,155 @@
+diff --git a/entry/src/main/ets/model/CardTemplate.ets b/entry/src/main/ets/model/CardTemplate.ets
+index adec993..9492856 100644
+--- a/entry/src/main/ets/model/CardTemplate.ets
++++ b/entry/src/main/ets/model/CardTemplate.ets
+@@ -25,6 +25,7 @@ export interface TemplateDefinition {
+     sources: string[];
+ }
+ export const CARD_TEMPLATES: TemplateDefinition[] = [
++    { "id": "regulator", "kind": "clock", "name": "调校仪", "sources": ["clock"] },
+     { "id": "standby", "kind": "clock", "name": "浮字", "sources": ["clock"] },
+     { "id": "dial", "kind": "clock", "name": "色盘", "sources": ["clock"] },
+     { "id": "flip", "kind": "clock", "name": "翻页", "sources": ["clock"] },
+diff --git a/entry/src/main/ets/model/RegulatorScene.ets b/entry/src/main/ets/model/RegulatorScene.ets
+new file mode 100644
+index 0000000..4b123fb
+--- /dev/null
++++ b/entry/src/main/ets/model/RegulatorScene.ets
+@@ -0,0 +1,49 @@
++import { FridgeCard } from './CardSchema';
++import { TemplateScene, TemplateMark } from './TemplateSceneTypes';
++
++/** One continuous regulator face. Clock/date derive only from the host tick. */
++export function regulatorScene(card: FridgeCard, tick: number): TemplateScene {
++  const s=new TemplateScene();
++  const wide=card.w/card.h>=1.5;
++  s.height=wide?150:300;
++  const palette=card.template?.palette??'';
++  const colors=palette==='cobalt'?['#182B50','#F3EEE1','#F06C45','#21395E','#91A1BB']:palette==='ink'?['#191D20','#E8E7DE','#D4E58B','#242B2E','#A0AAA8']:palette==='cream'?['#E8DDC8','#34302B','#A83F2B','#E3D6BD','#776F62']:['#F0EEE6','#262D32','#CC4F32','#E8E7DF','#747C7D'];
++  s.background=colors[0];s.ink=colors[1];s.accent=colors[2];
++  const now=new Date(tick),hh=('0'+now.getHours()).slice(-2),mm=now.getMinutes(),day=('0'+now.getDate()).slice(-2);
++  const weekday=['SUN','MON','TUE','WED','THU','FRI','SAT'][now.getDay()];
++  const add=(kind:string,x:number,y:number,w:number,h:number,color:string):TemplateMark=>{const m=new TemplateMark();m.kind=kind;m.x=x;m.y=y;m.w=w;m.h=h;m.color=color;s.marks.push(m);return m;};
++  const text=(v:string,x:number,y:number,w:number,h:number,size:number,color:string=s.ink,font:string='sans-serif',align:string='left'):void=>{const m=add('text',x,y,w,h,color);m.text=v;m.size=size;m.font=font;m.align=align;m.weight=500;};
++  const circle=(x:number,y:number,r:number,color:string):TemplateMark=>add('circle',x-r,y-r,r*2,r*2,color);
++  const line=(x:number,y:number,x2:number,y2:number,stroke:number,color:string):void=>{const m=add('line',x,y,x2,y2,color);m.stroke=stroke;};
++  const cx=wide?218:150,cy=wide?75:183,r=wide?65:105;
++  // A subtly recessed ceramic dial; the hand and every index carry real minutes.
++  circle(cx,cy+.6,r,colors[4]).opacity=.18;
++  circle(cx,cy,r-.7,colors[3]);
++  circle(cx,cy,r-13,colors[0]);
++  for(let i=0;i<60;i++){
++    const a=i*Math.PI/30,major=i%5===0,outer=r-5,inner=r-(major?14:9);
++    line(cx+Math.sin(a)*inner,cy-Math.cos(a)*inner,cx+Math.sin(a)*outer,cy-Math.cos(a)*outer,major?1.7:.65,major?s.ink:colors[4]);
++  }
++  for(let i=0;i<4;i++){
++    const a=i*Math.PI/2,rr=r-(wide?24:30),x=cx+Math.sin(a)*rr,y=cy-Math.cos(a)*rr;
++    text(['00','15','30','45'][i],x-(wide?9:13),y-(wide?7:9),wide?18:26,wide?17:21,wide?13:17,s.ink,'sans-serif','center');
++  }
++  // Offset hour and civil-date readings leave the minute sweep completely clear.
++  if(wide){
++    text('H O U R',22,16,110,12,8.5,colors[4]);
++    text(hh,20,28,114,71,66,s.ink,'digits');
++    text(weekday+'  /  '+day,23,118,110,17,12,s.ink);
++  }else{
++    text('H O U R',25,20,105,12,8.5,colors[4]);
++    text(hh,22,34,84,51,50,s.ink,'digits');
++    text(weekday,217,25,57,15,10,colors[4],'sans-serif','right');
++    text(day,217,41,57,34,28,s.ink,'digits','right');
++  }
++  // Precision hand: colored tip, darker counterweight and a tiny ceramic hub.
++  const a=mm*Math.PI/30,dx=Math.sin(a),dy=-Math.cos(a),tip=r-5,innerTip=r*(wide?.42:.46);
++  line(cx-dx*12,cy-dy*12,cx+dx*innerTip,cy+dy*innerTip,wide?2.7:3.2,s.accent);
++  line(cx+dx*(tip-6),cy+dy*(tip-6),cx+dx*tip,cy+dy*tip,wide?2.7:3.2,s.accent);
++  circle(cx,cy,wide?4.5:5.5,s.accent);
++  circle(cx,cy,wide?1.4:1.8,colors[0]);
++  return s;
++}
+diff --git a/entry/src/main/ets/model/TemplateFactory.ets b/entry/src/main/ets/model/TemplateFactory.ets
+index cc855ed..79e005b 100644
+--- a/entry/src/main/ets/model/TemplateFactory.ets
++++ b/entry/src/main/ets/model/TemplateFactory.ets
+@@ -38,8 +38,8 @@ export function makeTemplateCards(id: string, aspect: number, makeId: () => stri
+     // An ensemble must have an authored face. Never fall back to a miniature widget grid.
+     if (definition.kind === 'ensemble') return [];
+     const card = templateCard(id, definition.kind, makeId, now);
+-    card.w = Math.min(260, height - 24);
+-    card.h = card.w;
++    card.w = id==='regulator'?Math.min(300,(height-24)*(aspect>=1.5?2:1)):Math.min(260,height-24);
++    card.h = id==='regulator'&&aspect>=1.5?card.w/2:card.w;
+     card.x = (BOARD_W - card.w) / 2;
+     card.y = Math.max(12, (height - card.h) / 2) * 470 / height;
+     return [card];
+diff --git a/entry/src/main/ets/model/TemplateScene.ets b/entry/src/main/ets/model/TemplateScene.ets
+index 7176455..0836d9b 100644
+--- a/entry/src/main/ets/model/TemplateScene.ets
++++ b/entry/src/main/ets/model/TemplateScene.ets
+@@ -1,3 +1,4 @@
++import { regulatorScene } from './RegulatorScene';
+ import { portraitPhotoFrame, photoClockLayout } from './TemplatePhotoComposition';
+ import { compositionDefinition } from './CompositionCatalog';
+ import { templatePhotoBox, templateSubjectBox } from './TemplatePhotoGeometry';
+@@ -14,6 +15,7 @@ import { TemplateMark, TemplateScene } from './TemplateSceneTypes';
+ import { compositionScene } from './CompositionScene';
+ export { TemplateMark, TemplateScene } from './TemplateSceneTypes';
+ export function templateColors(card: FridgeCard): string[] {
++    if(card.template?.id==='regulator'){const s=regulatorScene(card,1);return [s.background,s.ink,s.accent];}
+     const id = card.template?.id ?? '', p = card.template?.palette ?? '';
+     const face=compositionDefinition(id)??compositionOwner(id);if(face)return compositionColors(face.id,p);
+     if (p === 'cobalt')
+@@ -59,6 +61,7 @@ export function templatePhoto(card: FridgeCard): CanvasElement | undefined { ret
+ /** Logical 300-square scene. All hosts consume the same positions and reading data. */
+ export function cardTemplateScene(card: FridgeCard, tick: number): TemplateScene {
+     tick = Number.isFinite(tick)&&tick>0?tick:Date.now();
++    if(card.template?.id==='regulator')return regulatorScene(card,tick);
+     const composed=compositionScene(card,tick);if(composed)return composed;
+     const s = new TemplateScene(), colors = templateColors(card);
+     s.background = colors[0];
+diff --git a/tests/card-templates.test.cjs b/tests/card-templates.test.cjs
+index 29698a1..8398190 100644
+--- a/tests/card-templates.test.cjs
++++ b/tests/card-templates.test.cjs
+@@ -2,7 +2,7 @@ process.env.TZ='Asia/Shanghai';
+ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+ const ctx=vm.createContext({});vm.runInContext(fs.readFileSync('previewer/shared-models.js','utf8'),ctx);
+ const load=n=>ctx.FridgeCore.load(n),s=load('CardSchema'),t=load('CardTemplate'),f=load('TemplateFactory'),r=load('TemplateScene'),snap=load('CardViewSnapshot'),p=load('TemplatePackage'),layout=load('CanvasLayout');
+-const singles=t.CARD_TEMPLATES.filter(t=>t.kind!=='ensemble');assert.equal(singles.length,39);assert.equal(t.CARD_TEMPLATES.length,44);
++const singles=t.CARD_TEMPLATES.filter(t=>t.kind!=='ensemble');assert.equal(singles.length,40);assert.equal(t.CARD_TEMPLATES.length,45);
+ let id=0;const now=Date.parse('2026-11-01T10:08:00+08:00');
+ for(const item of t.CARD_TEMPLATES){
+  for(const aspect of [0.3,0.9,1,2,3]){
+@@ -21,7 +21,7 @@ for(const item of t.CARD_TEMPLATES){
+ const dial=f.makeTemplateCards('dial',1,()=>String(++id),now)[0],marks=r.cardTemplateScene(dial,now).marks,rects=marks.filter(m=>m.kind==='rect');assert.equal(rects.length,2);assert.equal(marks.filter(m=>m.kind==='text').length,0);assert.equal(rects[0].angle,48);assert.equal(rects[1].angle,304);assert.ok(rects.every(m=>m.end&&m.h>m.w));
+ const photo=f.makeTemplateCards('portrait',1,()=>String(++id),now)[0],el=new s.CanvasElement();Object.assign(el,{kind:'image',src:'file:///photo.webp',depthForeground:'file:///subject.png',depthEnabled:true,depthSourceAspect:1});photo.elements=[el];let scene=r.cardTemplateScene(photo,now);assert.ok(scene.marks.some(m=>m.layer===3&&m.src===el.depthForeground));photo.template.depth=false;assert.ok(!r.cardTemplateScene(photo,now).marks.some(m=>m.layer===3));
+ const state=s.defaultState();state.cards=[new s.FridgeCard()];assert.equal(p.packageScene(JSON.stringify(state),'').version,1);assert.equal(s.normalizeState(state).cards[0].template,undefined);
+-console.log('Native card templates: 39 designs / 5 recipes, 5 canvas ratios, round trips, palette axes, depth layering passed');
++console.log('Native card templates: 40 designs / 5 recipes, 5 canvas ratios, round trips, palette axes, depth layering passed');
+ 
+ const modelRoot=require('node:path').resolve('entry/src/main/ets/model'),ts=require('/Applications/DevEco-Studio.app/Contents/tools/hvigor/hvigor/node_modules/typescript'),moduleCache=new Map();
+ function nativeLoad(name){if(moduleCache.has(name))return moduleCache.get(name).exports;const mod={exports:{}};moduleCache.set(name,mod);const code=ts.transpileModule(fs.readFileSync(modelRoot+'/'+name+'.ets','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;vm.runInThisContext('(function(require,module,exports){'+code+'\n})')(key=>nativeLoad(key.replace('./','')),mod,mod.exports);return mod.exports;}
+diff --git a/tests/template-layout.test.cjs b/tests/template-layout.test.cjs
+index 27327a9..f751fed 100644
+--- a/tests/template-layout.test.cjs
++++ b/tests/template-layout.test.cjs
+@@ -20,7 +20,7 @@ for(const item of catalog)for(const mode of ['empty','long','invalid','photo'])f
+ assert.deepEqual(Array.from(text.templateClusters('👨‍👩‍👧‍👦e\u0301🇨🇳')),['👨‍👩‍👧‍👦','e\u0301','🇨🇳']);
+ const longCard=factory.makeTemplateCards('course-next',1,()=> 'course')[0],tick=Date.parse('2026-11-01T10:08:00+08:00');scenario(longCard,'long',tick);assert.ok(render.cardTemplateScene(longCard,tick).marks.some(m=>m.kind==='text'&&m.lines===2));
+ const invalid=factory.makeTemplateCards('countdown-paper',1,()=> 'invalid')[0];scenario(invalid,'invalid',tick);assert.ok(render.cardTemplateScene(invalid,tick).marks.some(m=>m.text==='—'),'invalid dates stay unconfigured');
+-console.log(`PASS template layout: ${scenes} scenes / ${labels} text slots; 39 designs, 4 data extremes, 5 boundary dates, 4 aspect ratios, 4 palettes; measured fitting and Unicode clusters`);
++console.log(`PASS template layout: ${scenes} scenes / ${labels} text slots; 40 designs, 4 data extremes, 5 boundary dates, 4 aspect ratios, 4 palettes; measured fitting and Unicode clusters`);
+ 
+ const august=factory.makeTemplateCards('calendar-month',1,()=> 'six')[0],grid=render.cardTemplateScene(august,Date.parse('2026-08-31T12:00:00+08:00'));assert.ok(grid.marks.some(m=>m.kind==='text'&&m.text==='31'&&m.y===256),'six-row month shows the final date');
+ for(const zone of ['America/New_York','Europe/Berlin','Pacific/Auckland']){process.env.TZ=zone;const date=new Date(2026,5,1,0,0),card=factory.makeTemplateCards('year-dots',1,()=> zone)[0];assert.ok(render.cardTemplateScene(card,date.getTime()).marks.some(m=>m.text==='已过 151 天'),'civil day count must survive DST: '+zone);}process.env.TZ='Asia/Shanghai';
+diff --git a/tests/template-release.test.cjs b/tests/template-release.test.cjs
+index e7d3d83..6a096cb 100644
+--- a/tests/template-release.test.cjs
++++ b/tests/template-release.test.cjs
+@@ -5,7 +5,7 @@ for(const seed of ['invalid','2026-02-31','',undefined]){const card=review.card(
+ for(const palette of ['','cream','cobalt','ink']){const flip=render(review.card('flip','normal',palette),review.tick);assert.ok(flip.marks.filter(m=>m.kind==='text'&&m.font==='digits').every(m=>m.color==='#F0EEE5'),'flip numbers remain legible on fixed dark flip plates');const sleeve=render(review.card('album-sleeve','empty',palette),review.tick);assert.equal(sleeve.marks.find(m=>m.text==='选择本地封面').color,'#40382C','placeholder ink follows paper surface');}
+ const study=review.card('mix-study','normal','');assert.ok(render(study,review.tick).marks.some(m=>m.text==='正在上课'));assert.ok(render(study,review.tick+7200000).marks.some(m=>m.text==='下节课'),'ended lesson advances to upcoming occurrence');
+ const travel=review.card('mix-travel','normal','');travel.template.sources[0].date='2026-11-08';assert.ok(render(travel,review.tick).marks.some(m=>m.text==='今天'));
+-console.log(`PASS release data matrix: ${count} scenes, 44 templates, 4 palettes, 4 data states, 2 shapes, authored/filled geometry; 128 colliding lessons, invalid seed, contrast, ongoing class and same-day countdown`);
++console.log(`PASS release data matrix: ${count} scenes, 45 templates, 4 palettes, 4 data states, 2 shapes, authored/filled geometry; 128 colliding lessons, invalid seed, contrast, ongoing class and same-day countdown`);
+ const clusters=load('TemplateTextLayout').templateClusters;
+ for(const glyph of ['1️⃣','👍🏽','कु','a\u1ab0','🏴\u{e0067}\u{e0062}\u{e0065}\u{e006e}\u{e0067}\u{e007f}'])assert.deepEqual(Array.from(clusters(glyph)),[glyph],'do not detach Unicode marks or emoji tags');
+ const memory=review.card('mix-memory','normal','');assert.ok(render(memory,review.tick).marks.filter(m=>m.kind==='text').every(m=>m.layer===2),'photo positioning must not hide date or lunar readings');

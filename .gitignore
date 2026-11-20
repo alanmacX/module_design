@@ -1,2 +1,11 @@
 node_modules/
 .DS_Store
+.build/
+regulator/.fontcache/
+regulator/previews/*.png
+!regulator/previews/4x4-porcelain-420.png
+!regulator/previews/4x4-cream-420.png
+!regulator/previews/4x4-cobalt-420.png
+!regulator/previews/4x4-ink-420.png
+!regulator/previews/2x4-porcelain-420.png
+!regulator/previews/2x2-porcelain-180.png

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "scenes": 11520,
+  "fullDaySweep": true,
+  "textCollisions": 0,
+  "handTextCollisions": 0,
+  "leapDayAndYearBoundary": true,
+  "packageRoundTrips": 12,
+  "renderDoesNotMutate": true,
+  "modelFingerprint": "6986df47be385c772aff68c631b1a2d750cfa6889db42a462310d9e859e778c0"
+}
