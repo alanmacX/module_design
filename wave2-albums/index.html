@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>冰箱贴 · 第二批入选专辑模版（7 款全动态自适应采色）</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="gallery-shell">
+    <header class="gallery-header">
+      <div>
+        <h1>第二批入选 · 7 款自适应采色专辑模版</h1>
+        <p>入选保留原 #1、#2、#3、#4、#6、#8、#10 共七款构图，全面升级为<strong>实时像素感知自适应配色</strong>（自动从当前封面提取主导色相、高彩海报色、同色系浅/深底与 WCAG 安全对比字色）。点击卡片翻切专辑，或直接上传任意本地封面测试采色。</p>
+      </div>
+      <div class="toolbar" role="toolbar" aria-label="自适应模式与尺寸控制">
+        <button type="button" class="pill-btn" data-tone="auto" aria-pressed="true">智能主色自适应</button>
+        <button type="button" class="pill-btn" data-tone="light" aria-pressed="false">浅色画廊自适应</button>
+        <button type="button" class="pill-btn" data-tone="dark" aria-pressed="false">暗房深底自适应</button>
+        <button type="button" class="pill-btn" id="toggle-wide" aria-pressed="false">2×4 横向宽幅</button>
+        <button type="button" class="pill-btn" id="toggle-size" aria-pressed="false">180px 实际尺寸</button>
+        <button type="button" class="pill-btn" id="upload-btn">上传本地封面测试</button>
+        <input type="file" id="upload-input" accept="image/png,image/jpeg,image/webp" hidden>
+      </div>
+    </header>
+
+    <nav id="crate-bar" class="crate-bar" aria-label="测试专辑切换"></nav>
+
+    <main id="widget-grid" class="widget-grid"></main>
+  </div>
+
+  <script src="adaptive-color.js"></script>
+  <script src="templates.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const crate = window.Wave2AlbumCrate;
+      const list = window.Wave2CuratedAlbums;
+      const paletteCache = {};
+      const albumIdxByCard = {};
+      let globalAlbum = null; // null = staggered initial showcase
+      let toneMode = 'auto';
+      let wide = false;
+      let compact = false;
+
+      list.forEach((t, i) => {
+        albumIdxByCard[t.id] = i % crate.length;
+      });
+
+      async function ensurePalettes() {
+        await Promise.all(crate.map(async (item) => {
+          if (paletteCache[item.id]) return;
+          const img = new Image();
+          img.src = item.cover;
+          await img.decode();
+          paletteCache[item.id] = window.AdaptiveAlbumColor.extractFromImage(img);
+        }));
+      }
+
+      function getAlbumItem(idx) {
+        const n = crate.length;
+        const i = ((idx % n) + n) % n;
+        return { ...crate[i], index: i, num: String(i + 1).padStart(2, '0') };
+      }
+
+      function renderCrateBar() {
+        const bar = document.getElementById('crate-bar');
+        bar.innerHTML = crate.map((a, idx) => `
+          <button type="button" class="crate-chip" data-crate-all="${idx}" aria-pressed="${globalAlbum === idx}">
+            <img src="${a.cover}" alt=""/>
+            <span>${a.title} · ${a.artist}</span>
+          </button>
+        `).join('');
+      }
+
+      function renderGrid() {
+        document.body.classList.toggle('mode-wide', wide);
+        document.body.classList.toggle('size-compact', compact);
+        const grid = document.getElementById('widget-grid');
+        grid.innerHTML = list.map((t) => {
+          const aIdx = albumIdxByCard[t.id] ?? 0;
+          const cur = getAlbumItem(aIdx);
+          const next = getAlbumItem(aIdx + 1);
+          const pal = paletteCache[cur.id];
+          return `
+            <figure class="specimen" data-card="${t.id}">
+              <div class="specimen-stage">
+                <div class="slot-box">
+                  ${t.render(cur, next, pal, toneMode, wide)}
+                </div>
+              </div>
+              <figcaption class="specimen-meta">
+                <div class="specimen-toprow">
+                  <span class="cap-badge">${t.tag}</span>
+                  <div class="adaptive-dots" title="实时从当前封面提取的主色/强调色/浅底">
+                    <span class="adaptive-dot" style="background:${pal.posterBg}"></span>
+                    <span class="adaptive-dot" style="background:${pal.accentBg}"></span>
+                    <span class="adaptive-dot" style="background:${pal.lightSurface}"></span>
+                  </div>
+                </div>
+                <strong class="specimen-title">#${t.originNo} · ${t.name}</strong>
+                <div class="specimen-ref">${t.desc}</div>
+              </figcaption>
+            </figure>`;
+        }).join('');
+      }
+
+      document.addEventListener('click', (e) => {
+        const hit = e.target.closest('.al-hit[data-id]');
+        if (hit) {
+          const id = hit.dataset.id;
+          albumIdxByCard[id] = ((albumIdxByCard[id] ?? 0) + 1) % crate.length;
+          globalAlbum = null;
+          renderCrateBar();
+          renderGrid();
+          return;
+        }
+
+        const crateBtn = e.target.closest('[data-crate-all]');
+        if (crateBtn) {
+          globalAlbum = Number(crateBtn.dataset.crateAll);
+          list.forEach((t) => { albumIdxByCard[t.id] = globalAlbum; });
+          renderCrateBar();
+          renderGrid();
+          return;
+        }
+
+        const toneBtn = e.target.closest('[data-tone]');
+        if (toneBtn) {
+          toneMode = toneBtn.dataset.tone;
+          document.querySelectorAll('[data-tone]').forEach((b) => {
+            b.setAttribute('aria-pressed', String(b === toneBtn));
+          });
+          renderGrid();
+          return;
+        }
+
+        const wideBtn = e.target.closest('#toggle-wide');
+        if (wideBtn) {
+          wide = !wide;
+          wideBtn.setAttribute('aria-pressed', String(wide));
+          renderGrid();
+          return;
+        }
+
+        const sizeBtn = e.target.closest('#toggle-size');
+        if (sizeBtn) {
+          compact = !compact;
+          sizeBtn.setAttribute('aria-pressed', String(compact));
+          renderGrid();
+          return;
+        }
+
+        if (e.target.closest('#upload-btn')) {
+          document.getElementById('upload-input').click();
+        }
+      });
+
+      document.getElementById('upload-input').addEventListener('change', async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        const url = URL.createObjectURL(f);
+        const img = new Image();
+        img.src = url;
+        await img.decode();
+        // Center-crop to 1:1 square if needed
+        const side = Math.min(img.naturalWidth, img.naturalHeight);
+        const c = document.createElement('canvas');
+        c.width = c.height = 600;
+        c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 600, 600);
+        const sqUrl = c.toDataURL('image/jpeg', 0.92);
+        URL.revokeObjectURL(url);
+
+        const sqImg = new Image();
+        sqImg.src = sqUrl;
+        await sqImg.decode();
+        const customId = 'custom_' + Date.now();
+        const baseName = f.name.replace(/\.[^.]+$/, '');
+        paletteCache[customId] = window.AdaptiveAlbumColor.extractFromImage(sqImg);
+        crate.unshift({ id: customId, title: baseName || '自选专辑', artist: '本地导入', cover: sqUrl });
+        globalAlbum = 0;
+        list.forEach((t) => { albumIdxByCard[t.id] = 0; });
+        renderCrateBar();
+        renderGrid();
+      });
+
+      ensurePalettes().then(() => {
+        renderCrateBar();
+        renderGrid();
+        window.__WAVE2_READY = true;
+      });
+    })();
+  </script>
+</body>
+</html>

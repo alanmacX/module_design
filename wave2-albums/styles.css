@@ -1,0 +1,625 @@
+/* ==========================================================================
+   Module Design · Wave 2 Curated Album Templates (7 Selected, Adaptive Color)
+   Selected IDs from exploration (#1, #2, #3, #4, #6, #8, #10):
+   1. Halo (原 #1 采色微边)
+   2. Mat (原 #2 留白采色卡)
+   3. Fullbleed (原 #3 满幅浮岛)
+   4. Bento (原 #4 胶囊便当栈)
+   5. Swiss (原 #6 瑞士直角格)
+   6. Masthead (原 #8 刊头叠印画报)
+   7. Crate (原 #10 唱片箱双叠)
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Barlow';
+  src: url('assets/BarlowCondensed-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-display: 'Barlow', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'HarmonyOS Sans SC', sans-serif;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snappy: cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0B0C10;
+  color: #F4F5F8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.gallery-shell {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+
+.gallery-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  margin-bottom: 22px;
+}
+
+.gallery-header h1 {
+  margin: 0 0 8px;
+  font-size: 29px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #FFFFFF;
+}
+
+.gallery-header p {
+  margin: 0;
+  max-width: 720px;
+  font-size: 14.5px;
+  line-height: 1.58;
+  color: rgba(244, 245, 248, 0.68);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.pill-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #F4F5F8;
+  font: 600 13.5px inherit;
+  padding: 8px 15px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.pill-btn:hover { background: rgba(255, 255, 255, 0.12); }
+
+.pill-btn[aria-pressed="true"] {
+  background: #FFFFFF;
+  color: #0B0C10;
+  border-color: #FFFFFF;
+}
+
+.crate-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.crate-chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(244, 245, 248, 0.86);
+  font: 600 13px inherit;
+  cursor: pointer;
+}
+
+.crate-chip img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.crate-chip[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #FFFFFF;
+  color: #FFFFFF;
+}
+
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px 24px;
+}
+
+body.size-compact .widget-grid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+body.mode-wide .widget-grid {
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+}
+
+.specimen {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.specimen-stage {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 34px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.size-compact .specimen-stage {
+  padding: 18px;
+  border-radius: 26px;
+}
+
+.slot-box {
+  container-type: inline-size;
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+body.size-compact .slot-box { max-width: 180px; }
+body.mode-wide .slot-box { max-width: 340px; aspect-ratio: 2 / 1; }
+body.mode-wide.size-compact .slot-box { max-width: 260px; }
+
+.specimen-meta {
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.specimen-toprow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cap-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+}
+
+.adaptive-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.adaptive-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+}
+
+.specimen-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.specimen-ref {
+  font-size: 12.5px;
+  color: rgba(244, 245, 248, 0.56);
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Widget Face (.al-face)
+   ========================================================================== */
+.al-face {
+  --u: calc(100cqw / 300);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(44 * var(--u));
+  overflow: hidden;
+  user-select: none;
+  cursor: pointer;
+  isolation: isolate;
+  box-shadow:
+    0 calc(16 * var(--u)) calc(34 * var(--u)) rgba(0, 0, 0, 0.42),
+    inset 0 0 0 0.75px rgba(255, 255, 255, 0.14);
+  transition: transform 160ms var(--ease-snappy), background-color 280ms ease;
+}
+
+body.mode-wide .al-face {
+  border-radius: calc(34 * var(--u));
+}
+
+.al-face:active { transform: scale(0.984); }
+
+.al-hit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.al-img-sq {
+  display: block;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.al-blur-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.al-solid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 1 · HALO */
+.al-halo-cover {
+  position: absolute;
+  left: calc(16 * var(--u));
+  top: calc(16 * var(--u));
+  width: calc(268 * var(--u));
+  height: calc(268 * var(--u));
+  border-radius: calc(28 * var(--u));
+  box-shadow:
+    0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(0, 0, 0, 0.26),
+    0 0 0 0.75px rgba(255, 255, 255, 0.22);
+  z-index: 2;
+}
+
+/* 2 · MAT */
+.al-mat-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.al-mat-cover {
+  position: absolute;
+  left: calc(20 * var(--u));
+  top: calc(20 * var(--u));
+  width: calc(172 * var(--u));
+  height: calc(172 * var(--u));
+  border-radius: calc(24 * var(--u));
+  box-shadow: 0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(0, 0, 0, 0.24);
+  z-index: 2;
+}
+
+.al-mat-meta {
+  position: absolute;
+  left: calc(22 * var(--u));
+  right: calc(22 * var(--u));
+  bottom: calc(20 * var(--u));
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 * var(--u));
+}
+
+.al-mat-title {
+  font-size: calc(25 * var(--u));
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: calc(-0.4 * var(--u));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.al-mat-artist {
+  font-size: calc(19.5 * var(--u));
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 3 · FULLBLEED */
+.al-full-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.al-full-pill {
+  position: absolute;
+  left: calc(18 * var(--u));
+  bottom: calc(18 * var(--u));
+  max-width: calc(264 * var(--u));
+  padding: calc(9 * var(--u)) calc(18 * var(--u));
+  border-radius: 999px;
+  backdrop-filter: blur(calc(18 * var(--u))) saturate(180%);
+  -webkit-backdrop-filter: blur(calc(18 * var(--u))) saturate(180%);
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.30);
+  font-size: calc(20.5 * var(--u));
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 3;
+}
+
+/* 4 · BENTO */
+.al-bento {
+  padding: calc(14 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+}
+
+.al-bento-top {
+  display: flex;
+  gap: calc(10 * var(--u));
+  height: calc(188 * var(--u));
+}
+
+.al-bento-cover {
+  width: calc(188 * var(--u));
+  height: calc(188 * var(--u));
+  border-radius: calc(28 * var(--u));
+  flex-shrink: 0;
+}
+
+.al-bento-side {
+  flex: 1;
+  border-radius: calc(28 * var(--u));
+  padding: calc(18 * var(--u)) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: calc(50 * var(--u));
+  line-height: 0.9;
+}
+
+.al-bento-pip {
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.al-bento-bot {
+  flex: 1;
+  border-radius: calc(26 * var(--u));
+  padding: 0 calc(18 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(10 * var(--u));
+}
+
+.al-bento-title {
+  font-size: calc(21.5 * var(--u));
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.al-bento-artist {
+  font-size: calc(19 * var(--u));
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: calc(104 * var(--u));
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 5 · SWISS (原 #6) */
+.al-swiss-cover {
+  position: absolute;
+  right: calc(18 * var(--u));
+  top: calc(18 * var(--u));
+  width: calc(164 * var(--u));
+  height: calc(164 * var(--u));
+  border-radius: calc(14 * var(--u));
+  box-shadow: 0 calc(10 * var(--u)) calc(24 * var(--u)) rgba(0, 0, 0, 0.22);
+  z-index: 2;
+}
+
+.al-swiss-artist {
+  position: absolute;
+  left: calc(18 * var(--u));
+  top: calc(20 * var(--u));
+  width: calc(96 * var(--u));
+  font-size: calc(19 * var(--u));
+  font-weight: 800;
+  line-height: 1.22;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: normal;
+  word-break: normal;
+  z-index: 3;
+}
+
+.al-swiss-title {
+  position: absolute;
+  left: calc(20 * var(--u));
+  right: calc(20 * var(--u));
+  bottom: calc(20 * var(--u));
+  font-size: calc(30 * var(--u));
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: calc(-0.6 * var(--u));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  z-index: 3;
+}
+
+/* 6 · MASTHEAD (原 #8) */
+.al-mast-head {
+  position: absolute;
+  left: calc(18 * var(--u));
+  right: calc(18 * var(--u));
+  top: calc(16 * var(--u));
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: calc(50 * var(--u));
+  line-height: 0.92;
+  letter-spacing: calc(-0.4 * var(--u));
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 2;
+}
+
+.al-mast-head.is-cjk {
+  font-family: var(--font-sans);
+  font-size: calc(52 * var(--u));
+  line-height: 1.04;
+  letter-spacing: calc(-1 * var(--u));
+  text-transform: none;
+}
+
+.al-mast-cover {
+  position: absolute;
+  right: calc(16 * var(--u));
+  bottom: calc(16 * var(--u));
+  width: calc(202 * var(--u));
+  height: calc(202 * var(--u));
+  border-radius: calc(26 * var(--u));
+  box-shadow: 0 calc(12 * var(--u)) calc(28 * var(--u)) rgba(0, 0, 0, 0.30);
+  z-index: 3;
+}
+
+.al-mast-pill {
+  position: absolute;
+  left: calc(18 * var(--u));
+  bottom: calc(20 * var(--u));
+  max-width: calc(156 * var(--u));
+  padding: calc(8 * var(--u)) calc(15 * var(--u));
+  border-radius: 999px;
+  backdrop-filter: blur(calc(16 * var(--u))) saturate(180%);
+  -webkit-backdrop-filter: blur(calc(16 * var(--u))) saturate(180%);
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.34);
+  font-size: calc(19.5 * var(--u));
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 4;
+}
+
+/* 7 · CRATE (原 #10) */
+.al-crate-back {
+  position: absolute;
+  right: calc(20 * var(--u));
+  top: calc(28 * var(--u));
+  width: calc(170 * var(--u));
+  height: calc(170 * var(--u));
+  border-radius: calc(22 * var(--u));
+  transform: rotate(8deg);
+  box-shadow: 0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(0, 0, 0, 0.28);
+  z-index: 1;
+}
+
+.al-crate-front {
+  position: absolute;
+  left: calc(20 * var(--u));
+  top: calc(20 * var(--u));
+  width: calc(184 * var(--u));
+  height: calc(184 * var(--u));
+  border-radius: calc(24 * var(--u));
+  box-shadow: 0 calc(12 * var(--u)) calc(28 * var(--u)) rgba(0, 0, 0, 0.38);
+  z-index: 2;
+}
+
+.al-crate-bar {
+  position: absolute;
+  left: calc(22 * var(--u));
+  right: calc(22 * var(--u));
+  bottom: calc(20 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(10 * var(--u));
+  z-index: 3;
+}
+
+.al-crate-title {
+  font-size: calc(23.5 * var(--u));
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.al-crate-pill {
+  padding: calc(5 * var(--u)) calc(12 * var(--u));
+  border-radius: 999px;
+  font-size: calc(19 * var(--u));
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Shared 2x4 Wide Helpers */
+.al-wide-cover-122 {
+  position: absolute;
+  left: calc(14 * var(--u));
+  top: calc(14 * var(--u));
+  width: calc(122 * var(--u));
+  height: calc(122 * var(--u));
+  border-radius: calc(20 * var(--u));
+  box-shadow: 0 calc(8 * var(--u)) calc(18 * var(--u)) rgba(0, 0, 0, 0.26);
+  z-index: 2;
+}
+
+.al-wide-meta-right {
+  position: absolute;
+  left: calc(150 * var(--u));
+  right: calc(18 * var(--u));
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: calc(5 * var(--u));
+  z-index: 3;
+}

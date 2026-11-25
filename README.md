@@ -1,6 +1,18 @@
 # Module Design
 
-## 第一批入选模版：Wave 1 Curated（Flux / Timeblock / Zine）
+## 第二批入选：Wave 2 Adaptive Albums（7 款自适应采色专辑模版）
+
+专辑封面专项入选保留的 7 款构图（`#01 Halo`、`#02 Mat`、`#03 Fullbleed`、`#04 Bento`、`#06 Swiss`、`#08 Masthead`、`#10 Crate`），全部接入实时像素感知自适应配色与 WCAG 对比度决策，支持 `2×2` 方形与 `2×4` 横向宽幅独立版式。
+
+![Wave 2 自适应总览](wave2-albums/previews/adaptive-auto-280.jpg)
+![Wave 2 浅调封面自适应](wave2-albums/previews/adaptive-light-cover-apple.jpg)
+![Wave 2 2×4 横向宽幅](wave2-albums/previews/adaptive-wide-2x4.jpg)
+
+[查看 7 款自适应专辑模版源码、本地封面测试器与预览说明](wave2-albums/README.md)
+
+---
+
+## 第一批入选：Wave 1 Curated（Flux / Timeblock / Zine）
 
 首轮筛选保留的三款高对比图形与真实抠像模版：潮汐反色字（`clock`）、时间胶囊栈（`agenda`）、画报景深刊头（`anniversary`）。
 
