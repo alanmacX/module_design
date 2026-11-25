@@ -1,5 +1,16 @@
 # Module Design
 
+## 第三批入选：Wave 3 Curated（Vignelli / Curtain / Course Bento）
+
+第三批保留的三款平面色面与模块化便当设计：撕页巨字历（`date`）、昼光推移幕（`dayprogress`）、课表双拼栈（`timetable`），均含 `2×2` 与 `2×4` 双版式。
+
+![Wave 3 色板一](wave3-curated/previews/palette-0-280.jpg)
+![Wave 3 2×4 宽幅](wave3-curated/previews/wide-2x4.jpg)
+
+[查看第三批入选模版源码与预览说明](wave3-curated/README.md)
+
+---
+
 ## 第二批入选：Wave 2 Adaptive Albums（7 款自适应采色专辑模版）
 
 专辑封面专项入选保留的 7 款构图（`#01 Halo`、`#02 Mat`、`#03 Fullbleed`、`#04 Bento`、`#06 Swiss`、`#08 Masthead`、`#10 Crate`），全部接入实时像素感知自适应配色与 WCAG 对比度决策，支持 `2×2` 方形与 `2×4` 横向宽幅独立版式。
