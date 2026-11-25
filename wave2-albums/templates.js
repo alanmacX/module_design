@@ -198,26 +198,23 @@
       id: 'album-swiss',
       originNo: '06',
       name: '瑞士直角格 · Swiss',
-      tag: '自适应海报主色 + L 型网格',
-      desc: '自动提取封面的主导高彩度色相生成专属国际主义海报底色，并按 WCAG 对比度自动决策黑白大字。',
+      tag: '自适应海报主色 + 纯粹负空间',
+      desc: '自动提取封面的主导高彩度色相生成专属国际主义海报底色，右上锚定封面、左侧留白呼吸、底部重黑体压住标题。',
       render(a, next, pal, toneMode, wide) {
         const bg = toneMode === 'light' ? pal.lightSurface : (toneMode === 'dark' ? pal.darkSurface : pal.posterBg);
         const ink = toneMode === 'light' ? pal.lightInk : (toneMode === 'dark' ? pal.darkInk : pal.posterInk);
-        const artistInk = toneMode === 'light' ? pal.lightTag : (toneMode === 'dark' ? pal.darkTag : ink);
 
         if (wide) {
           return `
             <div class="al-face" style="background:${bg};color:${ink}">
               <img class="al-img-sq" src="${a.cover}" alt="${esc(a.title)}"
-                style="position:absolute;right:calc(14 * var(--u));top:calc(16 * var(--u));width:calc(118 * var(--u));height:calc(118 * var(--u));border-radius:calc(12 * var(--u));box-shadow:0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(0,0,0,0.22);z-index:2"/>
-              <div style="position:absolute;left:calc(18 * var(--u));top:calc(16 * var(--u));width:calc(142 * var(--u));font-size:calc(19 * var(--u));font-weight:800;color:${artistInk};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(a.artist)}</div>
-              <div style="position:absolute;left:calc(18 * var(--u));bottom:calc(16 * var(--u));width:calc(142 * var(--u));font-size:calc(21.5 * var(--u));font-weight:900;line-height:1.12;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(a.title)}</div>
+                style="position:absolute;right:calc(14 * var(--u));top:calc(14 * var(--u));width:calc(122 * var(--u));height:calc(122 * var(--u));border-radius:calc(12 * var(--u));box-shadow:0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(0,0,0,0.22);z-index:2"/>
+              <div style="position:absolute;left:calc(20 * var(--u));bottom:calc(18 * var(--u));width:calc(140 * var(--u));font-size:calc(23 * var(--u));font-weight:900;line-height:1.12;letter-spacing:calc(-0.4 * var(--u));display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(a.title)}</div>
               <button type="button" class="al-hit" data-id="album-swiss" aria-label="切换专辑"></button>
             </div>`;
         }
         return `
           <div class="al-face" style="background:${bg};color:${ink}">
-            <div class="al-swiss-artist" style="color:${artistInk}">${esc(a.artist)}</div>
             <img class="al-img-sq al-swiss-cover" src="${a.cover}" alt="${esc(a.title)}"/>
             <div class="al-swiss-title">${esc(a.title)}</div>
             <button type="button" class="al-hit" data-id="album-swiss" aria-label="切换专辑"></button>
