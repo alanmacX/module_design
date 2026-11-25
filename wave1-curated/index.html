@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>冰箱贴 · 第一批入选模版（Flux / Timeblock / Zine）</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="gallery-shell">
+    <header class="gallery-header">
+      <div>
+        <h1>第一批入选模版 · Wave 1 Curated</h1>
+        <p>入选保留的三款模版：潮汐反色字（时钟）、时间胶囊栈（日程）、画报景深刊头（纪念日）。点击卡片可直接切换状态。</p>
+      </div>
+      <div class="toolbar" role="toolbar" aria-label="画廊控制">
+        <button type="button" class="pill-btn" data-palette-all="0" aria-pressed="true">色板一</button>
+        <button type="button" class="pill-btn" data-palette-all="1" aria-pressed="false">色板二</button>
+        <button type="button" class="pill-btn" data-palette-all="2" aria-pressed="false">色板三</button>
+        <button type="button" class="pill-btn" id="toggle-size" aria-pressed="false">180px 实际尺寸</button>
+      </div>
+    </header>
+    <main id="widget-grid" class="widget-grid"></main>
+  </div>
+  <script src="templates.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const list = window.CuratedWave1;
+      const states = {};
+      const swatchIdx = {};
+      let globalSwatch = 0;
+      let compact = false;
+
+      list.forEach((t) => {
+        states[t.id] = t.createState();
+        swatchIdx[t.id] = 0;
+      });
+
+      function renderGrid() {
+        document.body.classList.toggle('size-compact', compact);
+        const grid = document.getElementById('widget-grid');
+        grid.innerHTML = list.map((t) => {
+          const sIdx = swatchIdx[t.id] ?? globalSwatch;
+          const sw = t.swatches[sIdx % t.swatches.length];
+          const swatchesHtml = t.swatches.map((item, idx) => `
+            <button type="button" class="swatch-btn" style="--sw:${item.color}"
+              data-swatch-for="${t.id}" data-idx="${idx}"
+              aria-pressed="${sIdx === idx}" title="${item.name}" aria-label="${item.name}"></button>
+          `).join('');
+          return `
+            <figure class="specimen" data-card="${t.id}">
+              <div class="specimen-stage">
+                <div class="slot-box">${t.render(states[t.id], sw)}</div>
+              </div>
+              <figcaption class="specimen-meta">
+                <div class="specimen-toprow">
+                  <span class="cap-badge">${t.capability}</span>
+                  <div class="swatches">${swatchesHtml}</div>
+                </div>
+                <strong class="specimen-title">${t.name}</strong>
+              </figcaption>
+            </figure>`;
+        }).join('');
+      }
+
+      document.addEventListener('click', (e) => {
+        const hit = e.target.closest('.tw-hit[data-id]');
+        if (hit) {
+          const tpl = list.find((x) => x.id === hit.dataset.id);
+          if (tpl) {
+            tpl.interact(states[tpl.id]);
+            renderGrid();
+          }
+          return;
+        }
+        const swBtn = e.target.closest('[data-swatch-for]');
+        if (swBtn) {
+          swatchIdx[swBtn.dataset.swatchFor] = Number(swBtn.dataset.idx);
+          renderGrid();
+          return;
+        }
+        const allBtn = e.target.closest('[data-palette-all]');
+        if (allBtn) {
+          globalSwatch = Number(allBtn.dataset.paletteAll);
+          list.forEach((t) => { swatchIdx[t.id] = globalSwatch; });
+          document.querySelectorAll('[data-palette-all]').forEach((b) => {
+            b.setAttribute('aria-pressed', String(b === allBtn));
+          });
+          renderGrid();
+          return;
+        }
+        const sizeBtn = e.target.closest('#toggle-size');
+        if (sizeBtn) {
+          compact = !compact;
+          sizeBtn.setAttribute('aria-pressed', String(compact));
+          renderGrid();
+        }
+      });
+
+      renderGrid();
+    })();
+  </script>
+</body>
+</html>

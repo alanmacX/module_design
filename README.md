@@ -1,6 +1,17 @@
 # Module Design
 
-## 最新方案：调校仪 · REGULATOR
+## 第一批入选模版：Wave 1 Curated（Flux / Timeblock / Zine）
+
+首轮筛选保留的三款高对比图形与真实抠像模版：潮汐反色字（`clock`）、时间胶囊栈（`agenda`）、画报景深刊头（`anniversary`）。
+
+![Wave 1 色板一](wave1-curated/previews/palette-0-280.png)
+![Wave 1 180px 实际尺寸](wave1-curated/previews/compact-180.png)
+
+[查看三款入选模版源码与预览说明](wave1-curated/README.md)
+
+---
+
+## 原生时钟专项：调校仪 · REGULATOR
 
 原生调校仪式表盘：独立小时读窗、真实分钟刻度与指针、边缘日期。瓷白、奶油、钴蓝、墨黑四套配色，方形与横向分别设计。
 
