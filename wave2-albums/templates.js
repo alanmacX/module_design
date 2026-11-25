@@ -242,7 +242,7 @@
         if (wide) {
           return `
             <div class="al-face" style="background:${bg};color:${headInk}">
-              <div class="al-mast-head ${cjkCls}" style="right:calc(144 * var(--u));top:calc(18 * var(--u));font-size:${cjk ? 'calc(34 * var(--u))' : 'calc(40 * var(--u))'};line-height:0.94;white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical">${esc(a.title)}</div>
+              <div class="al-mast-head ${cjkCls}" style="right:calc(144 * var(--u));top:calc(18 * var(--u));font-size:${cjk ? 'calc(34 * var(--u))' : 'calc(36 * var(--u))'};line-height:0.94;white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical">${esc(a.title)}</div>
               <img class="al-img-sq" src="${a.cover}" alt="${esc(a.title)}"
                 style="position:absolute;right:calc(14 * var(--u));top:calc(14 * var(--u));width:calc(122 * var(--u));height:calc(122 * var(--u));border-radius:calc(20 * var(--u));box-shadow:0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(0,0,0,0.28);z-index:3"/>
               <button type="button" class="al-hit" data-id="album-masthead" aria-label="切换专辑"></button>
