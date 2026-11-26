@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>冰箱贴 · 第五批入选模版（热敏锯齿小票 · Receipt）</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="gallery-shell">
+    <header class="gallery-header">
+      <div>
+        <h1>第五批入选 · Wave 5 Curated（Receipt）</h1>
+        <p>入选保留的热敏锯齿小票日程模版（agenda），含 2×2 方形与 2×4 横向双栏出纸版式及三套机身纸张材质。</p>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="pill-btn" data-palette="0" aria-pressed="true">碳黑热敏机</button>
+        <button type="button" class="pill-btn" data-palette="1" aria-pressed="false">复古奶油机</button>
+        <button type="button" class="pill-btn" data-palette="2" aria-pressed="false">小票浅粉纸</button>
+        <button type="button" class="pill-btn" id="toggle-wide" aria-pressed="false">2×4 横向宽幅</button>
+        <button type="button" class="pill-btn" id="toggle-size" aria-pressed="false">180px 实际尺寸</button>
+      </div>
+    </header>
+    <main id="widget-grid" class="widget-grid"></main>
+  </div>
+  <script src="templates.js"></script>
+  <script>
+    (function () {
+      const tpl = window.CuratedWave5[0];
+      const st = tpl.createState();
+      let pIdx = 0, wide = false, compact = false;
+      function render() {
+        document.body.classList.toggle("mode-wide", wide);
+        document.body.classList.toggle("size-compact", compact);
+        const sw = tpl.swatches[pIdx];
+        document.getElementById("widget-grid").innerHTML = tpl.swatches.map((item, idx) => `
+          <figure class="specimen">
+            <div class="specimen-stage"><div class="slot-box">${tpl.render(st, item, wide)}</div></div>
+            <figcaption class="specimen-meta">
+              <div class="specimen-toprow"><span class="cap-badge">${tpl.capability}</span><span class="cap-badge">${item.name}</span></div>
+              <strong class="specimen-title">#04 · ${tpl.name}</strong>
+            </figcaption>
+          </figure>`).join("");
+      }
+      document.addEventListener("click", (e) => {
+        if (e.target.closest(".sk-hit")) { tpl.interact(st); render(); return; }
+        const pb = e.target.closest("[data-palette]");
+        if (pb) {
+          pIdx = Number(pb.dataset.palette);
+          document.querySelectorAll("[data-palette]").forEach((b) => b.setAttribute("aria-pressed", String(b === pb)));
+          render(); return;
+        }
+        const wb = e.target.closest("#toggle-wide");
+        if (wb) { wide = !wide; wb.setAttribute("aria-pressed", String(wide)); render(); return; }
+        const sb = e.target.closest("#toggle-size");
+        if (sb) { compact = !compact; sb.setAttribute("aria-pressed", String(compact)); render(); }
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

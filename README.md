@@ -1,5 +1,16 @@
 # Module Design
 
+## 第五批入选：Wave 5 Curated（热敏锯齿小票 · Receipt）
+
+第五批筛选保留的拟物热敏出纸日程小票（`agenda`），支持 `2×2` 方形与 `2×4` 横向双栏版式及三套机身纸张材质。
+
+![Wave 5 三套材质](wave5-curated/previews/palettes-280.jpg)
+![Wave 5 2×4 横向宽幅](wave5-curated/previews/wide-2x4.jpg)
+
+[查看第五批入选模版源码与预览说明](wave5-curated/README.md)
+
+---
+
 ## 第三批入选：Wave 3 Curated（Vignelli / Curtain / Course Bento）
 
 第三批保留的三款平面色面与模块化便当设计：撕页巨字历（`date`）、昼光推移幕（`dayprogress`）、课表双拼栈（`timetable`），均含 `2×2` 与 `2×4` 双版式。
